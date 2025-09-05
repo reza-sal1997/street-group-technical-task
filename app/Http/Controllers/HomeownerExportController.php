@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\HomeownerImportRequest;
-use App\Services\PersonNameParserService;
+use App\Services\HomeownerNameParserService;
 use Illuminate\Http\JsonResponse;
 
-class HomeownerImportController extends Controller
+class HomeownerExportController extends Controller
 {
     public function import(HomeownerImportRequest $request): JsonResponse
     {
@@ -14,7 +16,7 @@ class HomeownerImportController extends Controller
 
         $file = $request->file('file');
         $filePath = $file->getRealPath();
-        $service = new PersonNameParserService();
+        $service = new HomeownerNameParserService();
 
         // Open the file
         if (($handle = fopen($filePath, 'r')) !== FALSE) {

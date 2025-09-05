@@ -1,24 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Contracts\PersonParserInterface;
 use App\DTOs\PersonDTO;
 
-class PersonNameParserService implements PersonParserInterface
+class HomeownerNameParserService implements PersonParserInterface
 {
-    public function parse(string $nameStr): array
+    public function parse(string $name): array
     {
         $people = [];
 
         // Normalize input
-        $nameStr = $this->normalizeSeparators($nameStr);
+        $name = $this->normalizeSeparators($name);
 
-        // If "and" exists, split into chunks
-        if (stripos($nameStr, ' and ') !== false) {
-            $chunks = explode(' and ', $nameStr);
+        // If there is "and" in the string, split into chunks
+        if (stripos($name, ' and ') !== false) {
+            $chunks = explode(' and ', $name);
 
-            // If one side is just a title, treat as "shared surname" case
+            // If one side is just a title, the names share same surname
             if ($this->isSharedSurnameCase($chunks)) {
                 return $this->parseSharedSurname($chunks);
             }
@@ -31,25 +33,24 @@ class PersonNameParserService implements PersonParserInterface
             return $people;
         }
 
-        return $this->parseSinglePerson($nameStr);
+        return $this->parseSinglePerson($name);
     }
 
-    private function parseSinglePerson(string $nameStr): array
+    private function parseSinglePerson(string $name): array
     {
-        $parts = explode(' ', trim($nameStr));
         $people = [];
 
-        $title = $parts[0];
+        $segmentWords = explode(' ', trim($name));
+        $title = $segmentWords[0];
 
-        // Remove last element → surname
-        $lastName = array_pop($parts);
-//        noob bazi dar nayar agha ro ham hazf kon
-        // The remaining words after the title
-        $rest = array_slice($parts, 1);
+        // Remove the surname from the segment
+        $lastName = array_pop($segmentWords);
+
+        // Remaining words after the title
+        $rest = array_slice($segmentWords, 1);
 
         $firstName = null;
         $middleName   = null;
-//        check kon title hazf shode bashe
         if (!empty($rest)) {
             if (count($rest) === 1) {
                 $firstName = $rest[0];

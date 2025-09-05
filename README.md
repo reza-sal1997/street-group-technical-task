@@ -1,61 +1,106 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Laravel Homeowner Name Parser
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This Laravel application provides a robust service for parsing homeowner name strings from an uploaded CSV file. It intelligently splits full name strings into structured data, including title, first name, middle name, and last name. The service is designed to handle a variety of common name formats, such as single individuals, multiple people, and couples with shared surnames.
+Features
 
-## About Laravel
+    Parses Complex Name Strings: Accurately deconstructs names into structured PersonDTO objects.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+    Handles Multiple Formats:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+        Single individuals (Mr John F Doe)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+        Multiple, distinct individuals (Mr John Doe and Mrs Jane Smith)
 
-## Learning Laravel
+        Couples with shared surnames (Mr and Mrs Doe, Dr & Mrs John Smith)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+    Flexible Separators: Recognizes both and and & as separators.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+    Input Normalization: Automatically trims excess whitespace for cleaner processing.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+    CSV File Upload: Simple web interface to upload a list of names.
 
-## Laravel Sponsors
+    Fully Tested: Includes a comprehensive suite of unit tests to ensure parsing accuracy.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+How It Works
 
-### Premium Partners
+The user uploads a CSV file via a web form. The application expects the file to have a header row (which is automatically skipped) and a single column containing the full name strings of the homeowners.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+For each row, the HomeownerNameParserService is invoked. It applies a series of rules to dissect the name string and returns an array of one or more PersonDTO objects, which contain the structured name data.
+Example Parsing Logic
 
-## Contributing
+Input String
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
+Parsed Output (Array of PersonDTOs)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Prof Jane Doe
 
-## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+[title: 'Prof', first_name: 'Jane', initial: null, last_name: 'Doe']
 
-## License
+Mr John Doe & Mrs Jane Smith
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+[title: 'Mr', first_name: 'John', initial: null, lastName: 'Doe'],
+[title: 'Mrs', first_name: 'Jane', initial: null, lastName: 'Smith']
+
+
+Mr and Mrs Smith
+
+[title: 'Mr', first_name: null, initial: null, lastName: 'Smith'],
+[title: 'Mrs', first_name: null, initial: null, lastName: 'Smith']
+Getting Started
+Prerequisites
+
+    PHP >= 8.2
+
+    Composer
+
+    A web server (Laravel Herd, Valet, or php artisan serve)
+
+Installation
+
+    Clone the repository:
+
+    git clone https://github.com/reza-sal1997/street-group-technical-task.git
+    cd street-group-technical-task
+
+    Install dependencies:
+
+    composer install
+
+    Set up your environment file:
+
+    cp .env.example .env
+
+    Generate an application key:
+
+    php artisan key:generate
+
+Usage
+
+    Start the local development server:
+
+    php artisan serve
+
+    Navigate to the application's upload page in your web browser http://127.0.0.1:8000/.
+
+    Select a CSV file .
+
+Running Tests
+
+This project includes a suite of unit tests to verify the functionality of the HomeownerNameParserService. To run the tests, execute the following command from the project root:
+
+php artisan test
+
+You can also run the specific parser tests with:
+
+php artisan test --filter HomeownerNameParserServiceTest
+
+Key Components
+
+    app/Services/HomeownerNameParserService.php: Contains all the core logic for parsing name strings.
+
+    app/DTOs/PersonDTO.php: A simple Data Transfer Object to hold the structured name data.
+
+    app/Http/Controllers/HomeOwnerController.php: Handles the file upload request and invokes the parser service.

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Http\Requests;
 
 use App\Http\Requests\HomeownerImportRequest;
@@ -7,9 +9,6 @@ use Tests\TestCase;
 
 class UpdateProductsRequestTest extends TestCase
 {
-    /**
-     * @test
-     */
     public function it_returns_the_correct_validation_rules(): void
     {
         // Arrange
